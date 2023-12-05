@@ -1,0 +1,19 @@
+# Copyright VMware, Inc.
+# SPDX-License-Identifier: APACHE-2.0
+
+version: "2"
+
+services:
+  zookeeper:
+    image: ubuntu/zookeeper
+    hostname: localhost
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: ubuntu/kafka
+    hostname: localhost
+    container_name: kafka
+    ports:
+      - "9092:9092"
