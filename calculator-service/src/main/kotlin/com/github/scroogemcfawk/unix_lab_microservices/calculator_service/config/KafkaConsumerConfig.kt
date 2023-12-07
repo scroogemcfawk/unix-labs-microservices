@@ -16,9 +16,10 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 @Configuration
 open class KafkaConsumerConfig {
     @Value("\${spring.kafka.bootstrap-servers}")
+//    val bootstrapServers: String = "localhost:9092"
     lateinit var bootstrapServers: String
 
-
+    @Bean
     open fun consumerConfig(): HashMap<String, Any> {
         val props: HashMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers

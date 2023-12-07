@@ -1,5 +1,5 @@
 server:
     port: 8081
 spring:
-  kafka:
-      bootstrap-servers: "https://localhost:9092"
+    kafka:
+        bootstrap-servers: "kafka:9092"

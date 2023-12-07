@@ -28,6 +28,29 @@ class RequestController{
     @GetMapping("add")
     fun add(@RequestParam left: Int, @RequestParam right: Int): String {
         addQueue.send("add", "$requestCounter $left $right")
+        ++ApplicationContext.queue_size
+
+
+        // todo add load balancing
+        // get size of unread topic messages and start/stop extra containers
+        when (ApplicationContext.queue_size / ApplicationContext.worker_count) {
+            in 5..Int.MAX_VALUE -> {
+                // todo start extra worker
+                // ++ApplicationContext.worker_count
+                Runtime.getRuntime().exec("docker run -itd --rm unix-lab-microservices-calculator-service")
+            }
+
+            in 2..5 -> {
+                // continue
+            }
+
+            else -> {
+                // todo stop worker
+                // ++ApplicationContext.worker_count
+                Runtime.getRuntime().exec("docker stop \$(docker ps -a -q --filter ancestor=unix-lab-microservices-calculator-service --format=\"{{.ID}}\")")
+            }
+        }
+
         return "You request number: ${requestCounter++}"
     }
 }
