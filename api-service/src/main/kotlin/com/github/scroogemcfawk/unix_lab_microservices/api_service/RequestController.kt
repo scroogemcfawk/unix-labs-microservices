@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController
 class RequestController{
 
     @Autowired
+    lateinit var resultMap: HashMap<String, String>
+
+    @Autowired
     lateinit var addQueue: KafkaTemplate<String, String>
 
     var requestCounter = 0L
@@ -30,13 +33,8 @@ class RequestController{
         addQueue.send("add", "$requestCounter $left $right")
         ++ApplicationContext.queue_size
 
-
-        // todo add load balancing
-        // get size of unread topic messages and start/stop extra containers
         when (ApplicationContext.queue_size / ApplicationContext.worker_count) {
             in 5..Int.MAX_VALUE -> {
-                // todo start extra worker
-                // ++ApplicationContext.worker_count
                 Runtime.getRuntime().exec("docker run -itd --rm unix-lab-microservices-calculator-service")
             }
 
@@ -45,12 +43,22 @@ class RequestController{
             }
 
             else -> {
-                // todo stop worker
-                // ++ApplicationContext.worker_count
-                Runtime.getRuntime().exec("docker stop \$(docker ps -a -q --filter ancestor=unix-lab-microservices-calculator-service --format=\"{{.ID}}\")")
+                // stop worker
+                // first worker that reads message will exit
+                addQueue.send("add", "stop")
             }
         }
 
         return "You request number: ${requestCounter++}"
+    }
+
+    @GetMapping("result")
+    fun result(@RequestParam requestNumber: String): String {
+
+        return if (requestNumber in resultMap) {
+            resultMap[requestNumber]!!
+        } else {
+            "Result is not ready yet."
+        }
     }
 }
