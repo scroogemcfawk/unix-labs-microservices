@@ -5,31 +5,50 @@ services:
     image: ubuntu/zookeeper
     hostname: zookeeper
     container_name: zookeeper
+    networks:
+      - internal
     ports:
       - "2181:2181"
 
   kafka:
     image: ubuntu/kafka
+    depends_on:
+      - zookeeper
     hostname: kafka
     container_name: kafka
+    networks:
+      - internal
     ports:
       - "9092:9092"
 
-#  api-service:
-#    build:
-#      context: ./
-#      dockerfile: dockerfiles/api.Dockerfile
-#    hostname: master
-#    container_name: master
-#    ports:
-#      - "8081:8081"
-#    volumes:
-#      - "./api-service/build/libs:/service"
+  api-service:
+    build:
+      context: ./
+      dockerfile: dockerfiles/api.Dockerfile
+    depends_on:
+      - kafka
+    hostname: localhost
+    networks:
+      - internal
+    container_name: master
+    ports:
+      - "8081:8081"
+    volumes:
+      - "./api-service/build/libs:/service"
+      - "//var/run/docker.sock:/var/run/docker.sock"
 
   calculator-service:
     build:
       context: ./
       dockerfile: ./dockerfiles/calculator.Dockerfile
-    container_name: worker
+    depends_on:
+      - kafka
+#    container_name: worker
+    networks:
+      - internal
     volumes:
       - "./calculator-service/build/libs:/service"
+
+networks:
+  internal:
+    driver: "bridge"

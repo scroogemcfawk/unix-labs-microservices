@@ -21,7 +21,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("dev.scroogemcfawk.manicurebot.MainKt")
+    mainClass.set("com.github.scroogemcfawk.unix_lab_microservices.calculator_service.MainKt")
 }
 
 mainClassName = "com.github.scroogemcfawk.unix_lab_microservices.calculator_service.MainKt"

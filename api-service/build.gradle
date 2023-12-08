@@ -22,6 +22,7 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.kafka:spring-kafka")
 
+
 }
 
 mainClassName = "com.github.scroogemcfawk.unix_lab_microservices.api_service.MainKt"

@@ -8,4 +8,6 @@ RUN apk --no-cache add openjdk17-jre-headless
 
 WORKDIR /service
 
-ENTRYPOINT java -jar -Dspring.kafka.bootstrap-servers="kafka:9092" "calculator-service.jar"
+COPY ../calculator-service/build/libs .
+
+ENTRYPOINT java -jar "calculator-service-1.0-SNAPSHOT.jar"

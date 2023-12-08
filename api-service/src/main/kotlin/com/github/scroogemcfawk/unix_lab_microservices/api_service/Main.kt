@@ -6,8 +6,8 @@ import org.springframework.boot.runApplication
 import org.springframework.retry.support.Args
 
 object ApplicationContext {
-    public var queue_size: Int = 1
-    public var worker_count: Int = 1
+    var queue_size: Int = 0
+    var worker_count: Int = 0
 }
 
 

@@ -12,8 +12,8 @@ import org.springframework.kafka.core.ProducerFactory
 @Configuration
 open class KafkaProducerConfig {
 
-//    @Value("\${spring.kafka.bootstrap-servers}")
-    var bootstrapServers: String = "localhost:9093"
+    @Value("\${spring.kafka.bootstrap-servers}")
+    lateinit var bootstrapServers: String
 
     @Bean
     open fun producerConfig(): HashMap<String, Any> {

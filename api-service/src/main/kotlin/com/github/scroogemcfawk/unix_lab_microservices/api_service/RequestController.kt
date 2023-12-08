@@ -33,20 +33,18 @@ class RequestController{
         addQueue.send("add", "$requestCounter $left $right")
         ++ApplicationContext.queue_size
 
-        when (ApplicationContext.queue_size / ApplicationContext.worker_count) {
-            in 5..Int.MAX_VALUE -> {
-                Runtime.getRuntime().exec("docker run -itd --rm unix-lab-microservices-calculator-service")
-            }
+        println("queue size = ${ApplicationContext.queue_size}, worker count = ${ApplicationContext.worker_count}")
 
-            in 2..5 -> {
-                // continue
-            }
-
-            else -> {
-                // stop worker
-                // first worker that reads message will exit
-                addQueue.send("add", "stop")
-            }
+        if (ApplicationContext.worker_count == 0 ||
+            ((ApplicationContext.queue_size / ApplicationContext.worker_count) > 3))
+        {
+            ++ApplicationContext.worker_count
+            Runtime.getRuntime().exec("docker run -itd --net=unix-lab-microservices_internal --rm unix-lab-microservices-calculator-service")
+            println("MASTER: START WORKER")
+        } else {
+            addQueue.send("add", "stop")
+            --ApplicationContext.worker_count
+            println("MASTER: STOP WORKER")
         }
 
         return "You request number: ${requestCounter++}"
