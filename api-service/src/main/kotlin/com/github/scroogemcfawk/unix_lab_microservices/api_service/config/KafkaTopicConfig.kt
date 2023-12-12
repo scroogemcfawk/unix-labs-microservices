@@ -10,7 +10,9 @@ open class KafkaTopicConfig {
 
     @Bean
     open fun addTopic(): NewTopic {
-        return TopicBuilder.name("add")
+        return TopicBuilder
+            .name("add")
+            .partitions(32) // so up to 32 workers can listen to the topic
             .build()
     }
 

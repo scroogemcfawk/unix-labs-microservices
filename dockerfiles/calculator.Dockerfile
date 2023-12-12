@@ -10,4 +10,4 @@ WORKDIR /service
 
 COPY ../calculator-service/build/libs .
 
-ENTRYPOINT java -jar "calculator-service-1.0-SNAPSHOT.jar"
+ENTRYPOINT java -jar "calculator-service.jar"

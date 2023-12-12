@@ -11,13 +11,11 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
 
-//@PropertySource("classpath:application.yml")
+
 @Configuration
 open class KafkaProducerConfig {
 
-
     @Value("\${spring.kafka.bootstrap-servers}")
-//    val bootstrapServers: String = "localhost:9092"
     lateinit var bootstrapServers: String
 
 

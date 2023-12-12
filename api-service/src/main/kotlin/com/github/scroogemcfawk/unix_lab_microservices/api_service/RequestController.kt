@@ -1,6 +1,7 @@
 package com.github.scroogemcfawk.unix_lab_microservices.api_service
 
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.core.KafkaTemplate
@@ -17,11 +18,11 @@ class RequestController{
     lateinit var resultMap: HashMap<String, String>
 
     @Autowired
-    lateinit var addQueue: KafkaTemplate<String, String>
+    lateinit var kafkaAdd: KafkaTemplate<String, String>
 
-    var requestCounter = 0L
+    private var requestCounter = 0L
 
-//    val log = LoggerFactory.getLogger("RequestController")
+    private val log: Logger = LoggerFactory.getLogger("RequestController")
 
     @GetMapping("test")
     fun test(): String {
@@ -30,28 +31,16 @@ class RequestController{
 
     @GetMapping("add")
     fun add(@RequestParam left: Int, @RequestParam right: Int): String {
-        addQueue.send("add", "$requestCounter $left $right")
-        ++ApplicationContext.queue_size
+        log.info("Request: add($left, $right) -> [$requestCounter]")
 
-        println("queue size = ${ApplicationContext.queue_size}, worker count = ${ApplicationContext.worker_count}")
-
-        if (ApplicationContext.worker_count == 0 ||
-            ((ApplicationContext.queue_size / ApplicationContext.worker_count) > 3))
-        {
-            ++ApplicationContext.worker_count
-            Runtime.getRuntime().exec("docker run -itd --net=unix-lab-microservices_internal --rm unix-lab-microservices-calculator-service")
-            println("MASTER: START WORKER")
-        } else {
-            addQueue.send("add", "stop")
-            --ApplicationContext.worker_count
-            println("MASTER: STOP WORKER")
-        }
+        kafkaAdd.send("add", "$requestCounter $left $right")
 
         return "You request number: ${requestCounter++}"
     }
 
     @GetMapping("result")
     fun result(@RequestParam requestNumber: String): String {
+        log.info("Request: result($requestNumber)")
 
         return if (requestNumber in resultMap) {
             resultMap[requestNumber]!!

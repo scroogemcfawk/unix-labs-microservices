@@ -19,7 +19,6 @@ open class KafkaConsumerConfig {
     @Value("\${spring.kafka.bootstrap-servers}")
     lateinit var bootstrapServers: String
 
-
     @Bean
     open fun consumerConfig(): HashMap<String, Any> {
         val props: HashMap<String, Any> = HashMap()

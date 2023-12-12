@@ -15,18 +15,12 @@ class KafkaListener {
 
     @KafkaListener(
         topics = ["result"],
-        groupId = "add",
+        groupId = "api-services",
 
     )
     fun listen(message: String) {
-        println("Client Service Received: $message")
-        try {
-            val (id, result) = message.split(" ")
-            resultMap[id] = result
-            --ApplicationContext.queue_size
-        } catch (e: Exception) {
-            println("Client Service Error: ${e.message}")
-        }
+        val (id, result) = message.split(" ")
+        resultMap[id] = result
     }
 
 }

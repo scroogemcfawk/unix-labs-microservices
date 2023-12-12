@@ -17,12 +17,8 @@ repositories {
 }
 
 dependencies {
-
     implementation("org.springframework.boot:spring-boot-starter-web")
-//    implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.kafka:spring-kafka")
-
-
 }
 
 mainClassName = "com.github.scroogemcfawk.unix_lab_microservices.api_service.MainKt"
@@ -31,19 +27,8 @@ application {
     mainClass.set("$mainClassName")
 }
 
-jar {
-
-    manifest {
-        attributes "Main-Class": "$mainClassName"
-    }
-
+bootJar {
     archiveFileName = "api-service.jar"
-
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 compileJava {

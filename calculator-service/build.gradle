@@ -26,18 +26,8 @@ application {
 
 mainClassName = "com.github.scroogemcfawk.unix_lab_microservices.calculator_service.MainKt"
 
-jar {
-    manifest {
-        attributes "Main-Class": "$mainClassName"
-    }
-
+bootJar {
     archiveFileName = "calculator-service.jar"
-
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 //kotlin {
